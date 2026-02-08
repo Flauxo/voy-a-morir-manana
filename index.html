@@ -169,6 +169,22 @@
             <div id="wait-message" class="wait-message hidden">
                 <p>Ya has tentado al destino hoy.</p>
                 <p class="wait-time">Vuelve mañana... si llegas.</p>
+                <button id="history-btn" class="history-button">
+                    <span>📜</span> Ver profecías anteriores
+                </button>
+            </div>
+
+            <!-- Modal de historial -->
+            <div id="history-modal" class="history-modal hidden">
+                <div class="history-content">
+                    <div class="history-header">
+                        <h3>📜 Profecías Anteriores</h3>
+                        <button id="close-history-btn" class="close-history-btn">✕</button>
+                    </div>
+                    <div id="history-list" class="history-list">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
             </div>
 
             <!-- Pie decorativo -->

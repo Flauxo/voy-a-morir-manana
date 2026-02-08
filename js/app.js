@@ -118,6 +118,7 @@ const RESPUESTA_SI = `Sí, pero recuerda que esto es una app para sacar dinero c
 // =============================================
 
 const STORAGE_KEY = 'voyAMorirManana_lastUse';
+const HISTORY_KEY = 'voyAMorirManana_history';
 const SPLASH_DURATION = 4300; // 4.3 segundos (3.5s animación + 0.8s fade)
 
 // =============================================
@@ -135,7 +136,11 @@ const elements = {
     resultText: document.getElementById('result-text'),
     resultDate: document.getElementById('result-date'),
     shareBtn: document.getElementById('share-btn'),
-    newQueryBtn: document.getElementById('new-query-btn')
+    newQueryBtn: document.getElementById('new-query-btn'),
+    historyBtn: document.getElementById('history-btn'),
+    historyModal: document.getElementById('history-modal'),
+    historyList: document.getElementById('history-list'),
+    closeHistoryBtn: document.getElementById('close-history-btn')
 };
 
 // =============================================
@@ -199,6 +204,63 @@ function formatDate() {
         minute: '2-digit'
     };
     return now.toLocaleDateString('es-ES', options);
+}
+
+// =============================================
+// FUNCIONES DE HISTORIAL
+// =============================================
+
+/**
+ * Guarda una profecía en el historial
+ */
+function saveToHistory(text, isYes) {
+    const history = getHistory();
+    history.unshift({
+        text: text,
+        isYes: isYes,
+        date: formatDate(),
+        timestamp: Date.now()
+    });
+    // Mantener máximo 50 entradas
+    if (history.length > 50) {
+        history.pop();
+    }
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+
+/**
+ * Obtiene el historial de profecías
+ */
+function getHistory() {
+    const stored = localStorage.getItem(HISTORY_KEY);
+    return stored ? JSON.parse(stored) : [];
+}
+
+/**
+ * Muestra el modal de historial
+ */
+function showHistoryModal() {
+    const history = getHistory();
+
+    if (history.length === 0) {
+        elements.historyList.innerHTML = '<p class="history-empty">No hay profecías anteriores... todavía.</p>';
+    } else {
+        elements.historyList.innerHTML = history.map(item => `
+            <div class="history-item ${item.isYes ? 'history-yes' : ''}">
+                <div class="history-date">${item.date}</div>
+                <div class="history-text">"${item.text}"</div>
+            </div>
+        `).join('');
+    }
+
+    elements.historyModal.classList.remove('hidden');
+}
+
+/**
+ * Cierra el modal de historial
+ */
+function closeHistoryModal() {
+    elements.historyModal.classList.add('hidden');
 }
 
 // =============================================
@@ -309,6 +371,9 @@ function initEventListeners() {
         const response = generateResponse();
         showResultScreen(response);
 
+        // Guardar en historial
+        saveToHistory(response.text, response.isYes);
+
         // Sonido de revelación
         setTimeout(() => {
             audioSystem.playReveal(response.isYes);
@@ -338,6 +403,25 @@ function initEventListeners() {
 
     elements.newQueryBtn.addEventListener('mouseenter', () => {
         audioSystem.playHover();
+    });
+
+    // Botón de ver historial
+    elements.historyBtn.addEventListener('click', () => {
+        audioSystem.playButtonClick();
+        showHistoryModal();
+    });
+
+    // Cerrar historial
+    elements.closeHistoryBtn.addEventListener('click', () => {
+        audioSystem.playButtonClick();
+        closeHistoryModal();
+    });
+
+    // Cerrar historial al hacer click fuera
+    elements.historyModal.addEventListener('click', (e) => {
+        if (e.target === elements.historyModal) {
+            closeHistoryModal();
+        }
     });
 }
 
