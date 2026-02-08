@@ -108,7 +108,7 @@ const RESPUESTAS_NO = [
     "No, el IVA no se paga solo.",
     "No, tus stories de Instagram necesitan público.",
     "No, la tostadora sigue atascándose y solo tú sabes arreglarla.",
-    "No, el 2025 promete ser interesante, aguanta."
+    "No, el 2026 promete ser interesante, aguanta."
 ];
 
 const RESPUESTA_SI = `Sí, pero recuerda que esto es una app para sacar dinero con publicidad y que quizá no tenga ni idea. Insisto, quizá. Por si acaso TEN CUIDADO.`;
@@ -253,7 +253,7 @@ function showResultScreen(response) {
  */
 async function shareResult() {
     const resultText = elements.resultText.textContent;
-    const shareText = `🔮 ¿Voy a morir mañana?\n\n"${resultText}"\n\n💀 Consulta tu destino en: [URL de la app]`;
+    const shareText = `🔮 ¿Voy a morir mañana?\n\n"${resultText}"\n\n💀 Consulta tu destino descargando la app "Voy a morir" de tu tienda de aplicaciones.`;
 
     // Intentar usar Web Share API (disponible en móviles)
     if (navigator.share) {
