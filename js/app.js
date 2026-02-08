@@ -74,6 +74,7 @@ const SPLASH_DURATION = 4300; // 4.3 segundos (3.5s animación + 0.8s fade)
 // =============================================
 
 const elements = {
+    startScreen: document.getElementById('start-screen'),
     splashScreen: document.getElementById('splash-screen'),
     mainScreen: document.getElementById('main-screen'),
     resultScreen: document.getElementById('result-screen'),
@@ -300,24 +301,40 @@ function init() {
     // Configurar event listeners
     initEventListeners();
 
-    // Iniciar audio al primer click (requerido por navegadores)
-    const startAudio = () => {
-        audioSystem.init();
-        audioSystem.playSpinningSound();
-        document.removeEventListener('click', startAudio);
-        document.removeEventListener('touchstart', startAudio);
-    };
-    document.addEventListener('click', startAudio);
-    document.addEventListener('touchstart', startAudio);
+    // Ocultar splash inicialmente (se mostrará después del click)
+    elements.splashScreen.classList.add('hidden');
 
-    // Mostrar pantalla principal después del splash
-    setTimeout(() => {
-        showMainScreen();
-        // Iniciar ambiente atmosférico
-        if (audioSystem.isInitialized) {
-            audioSystem.startAmbient();
-        }
-    }, SPLASH_DURATION);
+    // Handler para la pantalla de inicio
+    const handleStart = () => {
+        // Iniciar audio
+        audioSystem.init();
+
+        // Ocultar pantalla de inicio
+        elements.startScreen.style.opacity = '0';
+        elements.startScreen.style.transition = 'opacity 0.3s ease';
+
+        setTimeout(() => {
+            elements.startScreen.classList.add('hidden');
+
+            // Mostrar splash y reproducir sonido de ruleta
+            elements.splashScreen.classList.remove('hidden');
+            audioSystem.playSpinningSound();
+
+            // Mostrar pantalla principal después del splash
+            setTimeout(() => {
+                showMainScreen();
+                // Iniciar ambiente atmosférico
+                audioSystem.startAmbient();
+            }, SPLASH_DURATION);
+        }, 300);
+
+        // Remover listeners
+        elements.startScreen.removeEventListener('click', handleStart);
+        elements.startScreen.removeEventListener('touchstart', handleStart);
+    };
+
+    elements.startScreen.addEventListener('click', handleStart);
+    elements.startScreen.addEventListener('touchstart', handleStart);
 }
 
 // Ejecutar cuando el DOM esté listo
