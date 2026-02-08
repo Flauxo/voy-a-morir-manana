@@ -119,6 +119,8 @@ body::after {
 
 .start-content {
     text-align: center;
+    padding: 2rem;
+    max-width: 400px;
     animation: breathe 2s ease-in-out infinite;
 }
 
@@ -151,9 +153,10 @@ body::after {
 }
 
 .start-hint {
-    font-size: 2rem;
+    font-size: 1rem;
     color: var(--gold-dark);
-    animation: bounce 1s ease-in-out infinite;
+    font-family: var(--font-body);
+    font-style: italic;
 }
 
 @keyframes bounce {
@@ -182,7 +185,6 @@ body::after {
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    animation: fadeOutSplash 0.8s ease-out 3.5s forwards;
 }
 
 @keyframes fadeOutSplash {
