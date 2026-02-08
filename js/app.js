@@ -8,7 +8,7 @@
 // =============================================
 
 const RESPUESTAS_NO = [
-    "No, mañana no.",
+    "No, mañana parece que no.",
     "No, aún toca aguantar a la suegra un día más.",
     "No, no te libras de madrugar.",
     "No, el lunes sigue existiendo para ti.",
@@ -248,20 +248,44 @@ async function shareResult() {
 function initEventListeners() {
     // Botón de revelar destino
     elements.revealBtn.addEventListener('click', () => {
+        audioSystem.playButtonClick();
+
         // Guardar uso
         saveUsage();
 
         // Generar y mostrar respuesta
         const response = generateResponse();
         showResultScreen(response);
+
+        // Sonido de revelación
+        setTimeout(() => {
+            audioSystem.playReveal(response.isYes);
+        }, 300);
+    });
+
+    // Hover en botón principal
+    elements.revealBtn.addEventListener('mouseenter', () => {
+        audioSystem.playHover();
     });
 
     // Botón de compartir
-    elements.shareBtn.addEventListener('click', shareResult);
+    elements.shareBtn.addEventListener('click', () => {
+        audioSystem.playShare();
+        shareResult();
+    });
+
+    elements.shareBtn.addEventListener('mouseenter', () => {
+        audioSystem.playHover();
+    });
 
     // Botón de volver
     elements.newQueryBtn.addEventListener('click', () => {
+        audioSystem.playButtonClick();
         showMainScreen();
+    });
+
+    elements.newQueryBtn.addEventListener('mouseenter', () => {
+        audioSystem.playHover();
     });
 }
 
@@ -276,9 +300,23 @@ function init() {
     // Configurar event listeners
     initEventListeners();
 
+    // Iniciar audio al primer click (requerido por navegadores)
+    const startAudio = () => {
+        audioSystem.init();
+        audioSystem.playSpinningSound();
+        document.removeEventListener('click', startAudio);
+        document.removeEventListener('touchstart', startAudio);
+    };
+    document.addEventListener('click', startAudio);
+    document.addEventListener('touchstart', startAudio);
+
     // Mostrar pantalla principal después del splash
     setTimeout(() => {
         showMainScreen();
+        // Iniciar ambiente atmosférico
+        if (audioSystem.isInitialized) {
+            audioSystem.startAmbient();
+        }
     }, SPLASH_DURATION);
 }
 
