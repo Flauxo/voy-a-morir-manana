@@ -140,7 +140,10 @@ const elements = {
     historyBtn: document.getElementById('history-btn'),
     historyModal: document.getElementById('history-modal'),
     historyList: document.getElementById('history-list'),
-    closeHistoryBtn: document.getElementById('close-history-btn')
+    closeHistoryBtn: document.getElementById('close-history-btn'),
+    soundToggle: document.getElementById('sound-toggle'),
+    soundIconOn: document.getElementById('sound-icon-on'),
+    soundIconOff: document.getElementById('sound-icon-off')
 };
 
 // =============================================
@@ -422,6 +425,16 @@ function initEventListeners() {
         if (e.target === elements.historyModal) {
             closeHistoryModal();
         }
+    });
+
+    // Botón de sonido (mute/unmute)
+    elements.soundToggle.addEventListener('click', () => {
+        const isMuted = audioSystem.toggleMute();
+
+        // Cambiar iconos
+        elements.soundIconOn.classList.toggle('hidden', isMuted);
+        elements.soundIconOff.classList.toggle('hidden', !isMuted);
+        elements.soundToggle.classList.toggle('muted', isMuted);
     });
 }
 

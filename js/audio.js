@@ -8,6 +8,30 @@ class AudioSystem {
         this.audioContext = null;
         this.isInitialized = false;
         this.ambientNodes = null;
+        this.isMuted = false;
+    }
+
+    /**
+     * Toggle mute
+     */
+    toggleMute() {
+        this.isMuted = !this.isMuted;
+
+        if (this.isMuted) {
+            // Silenciar ambiente
+            if (this.ambientNodes) {
+                this.ambientNodes.droneGain.gain.setValueAtTime(0, this.audioContext.currentTime);
+                this.ambientNodes.windGain.gain.setValueAtTime(0, this.audioContext.currentTime);
+            }
+        } else {
+            // Restaurar ambiente
+            if (this.ambientNodes) {
+                this.ambientNodes.droneGain.gain.setValueAtTime(0.08, this.audioContext.currentTime);
+                this.ambientNodes.windGain.gain.setValueAtTime(0.12, this.audioContext.currentTime);
+            }
+        }
+
+        return this.isMuted;
     }
 
     /**
@@ -52,7 +76,7 @@ class AudioSystem {
      * Sonido de ruleta girando para el splash
      */
     playSpinningSound() {
-        if (!this.isInitialized) return;
+        if (!this.isInitialized || this.isMuted) return;
 
         const now = this.audioContext.currentTime;
         const duration = 3.5;
@@ -227,7 +251,7 @@ class AudioSystem {
      * Sonido de botón hover (sutil)
      */
     playHover() {
-        if (!this.isInitialized) return;
+        if (!this.isInitialized || this.isMuted) return;
 
         const now = this.audioContext.currentTime;
         const oscillator = this.audioContext.createOscillator();
@@ -250,7 +274,7 @@ class AudioSystem {
      * Sonido de botón click
      */
     playButtonClick() {
-        if (!this.isInitialized) return;
+        if (!this.isInitialized || this.isMuted) return;
 
         const now = this.audioContext.currentTime;
 
@@ -289,7 +313,7 @@ class AudioSystem {
      * Sonido de revelación del destino (dramático)
      */
     playReveal(isYes = false) {
-        if (!this.isInitialized) return;
+        if (!this.isInitialized || this.isMuted) return;
 
         const now = this.audioContext.currentTime;
 
@@ -370,7 +394,7 @@ class AudioSystem {
      * Sonido de compartir
      */
     playShare() {
-        if (!this.isInitialized) return;
+        if (!this.isInitialized || this.isMuted) return;
 
         const now = this.audioContext.currentTime;
 
