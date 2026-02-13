@@ -370,6 +370,9 @@ function shareResult() {
     const resultText = elements.resultText.textContent;
     const shareText = `🔮 ¿Voy a morir mañana?\n\n"${resultText}"\n\n💀 Consulta tu destino descargando la app "Voy a morir" de tu tienda de aplicaciones.`;
 
+    // DEBUG TEMPORAL - quitar después
+    alert('DEBUG: navigator.share = ' + typeof navigator.share + ', secure = ' + window.isSecureContext + ', protocol = ' + location.protocol);
+
     // Intentar usar Web Share API (disponible en móviles)
     if (navigator.share) {
         navigator.share({
@@ -377,15 +380,12 @@ function shareResult() {
             text: shareText,
             url: window.location.href
         }).catch(err => {
-            // Si el usuario cancela, no hacer nada
             if (err.name !== 'AbortError') {
-                console.log('Error compartiendo:', err);
-                // Fallback a clipboard si falla
+                alert('Error share: ' + err.message);
                 copyToClipboard(shareText);
             }
         });
     } else {
-        // Fallback: copiar al portapapeles
         copyToClipboard(shareText);
     }
 }
