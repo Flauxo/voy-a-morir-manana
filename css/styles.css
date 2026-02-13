@@ -682,6 +682,20 @@ body::after {
     padding: 1rem;
     border-bottom: 1px solid rgba(139, 115, 85, 0.3);
     animation: fadeIn 0.3s ease-out;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.history-item:hover {
+    background: rgba(139, 115, 85, 0.1);
+}
+
+.history-item-content {
+    flex: 1;
 }
 
 .history-item:last-child {
@@ -693,15 +707,83 @@ body::after {
     font-size: 0.7rem;
     color: var(--gold-dark);
     letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
 }
 
 .history-text {
     font-family: var(--font-body);
     font-style: italic;
     color: var(--text-light);
-    font-size: 1rem;
+    font-size: 0.95rem;
     line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.history-share-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.history-share-btn:hover {
+    background: rgba(139, 115, 85, 0.2);
+    color: var(--gold-light);
+}
+
+/* Modal de detalle de historial */
+.history-detail-content {
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-paper));
+    border: 2px solid var(--gold-dark);
+    max-width: 400px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 40px var(--shadow-dark);
+}
+
+.history-detail-body {
+    padding: 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.history-detail-date {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--gold-dark);
+    letter-spacing: 0.2em;
+    margin: 0;
+    opacity: 0.8;
+}
+
+.history-detail-text {
+    font-family: var(--font-body);
+    font-size: 1.4rem;
+    color: var(--text-light);
+    line-height: 1.6;
+    font-style: italic;
+    margin: 0;
+}
+
+.history-detail-share-btn {
+    margin-top: 1rem;
+    width: 100%;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 .history-empty {

@@ -284,15 +284,75 @@ function showHistoryModal() {
     if (history.length === 0) {
         elements.historyList.innerHTML = '<p class="history-empty">No hay profecías anteriores... todavía.</p>';
     } else {
-        elements.historyList.innerHTML = history.map(item => `
-            <div class="history-item ${item.isYes ? 'history-yes' : ''}">
-                <div class="history-date">${item.date}</div>
-                <div class="history-text">"${item.text}"</div>
+        elements.historyList.innerHTML = history.map((item, index) => `
+            <div class="history-item ${item.isYes ? 'history-yes' : ''}" data-index="${index}">
+                <div class="history-item-content">
+                    <div class="history-date">${item.date}</div>
+                    <div class="history-text">"${item.text}"</div>
+                </div>
+                <button class="history-share-btn" data-index="${index}" title="Compartir">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                </button>
             </div>
         `).join('');
+
+        // Añadir event listeners a los botones de compartir
+        elements.historyList.querySelectorAll('.history-share-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const index = parseInt(btn.getAttribute('data-index'));
+                shareHistoryItem(history[index]);
+            });
+        });
+
+        // Añadir event listeners a los items para abrir detalle
+        elements.historyList.querySelectorAll('.history-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const index = parseInt(item.getAttribute('data-index'));
+                showHistoryDetail(history[index]);
+            });
+        });
     }
 
     elements.historyModal.classList.remove('hidden');
+}
+
+/**
+ * Muestra el detalle de una profecía del historial
+ */
+function showHistoryDetail(item) {
+    const detailModal = document.getElementById('history-detail-modal');
+    document.getElementById('detail-date').textContent = item.date;
+    document.getElementById('detail-text').textContent = `"${item.text}"`;
+
+    // Configurar botón de compartir del detalle
+    const shareBtn = document.getElementById('detail-share-btn');
+    shareBtn.onclick = () => shareHistoryItem(item);
+
+    detailModal.classList.remove('hidden');
+}
+
+/**
+ * Cierra el detalle de historial
+ */
+function closeHistoryDetail() {
+    document.getElementById('history-detail-modal').classList.add('hidden');
+}
+
+/**
+ * Comparte un item específico del historial
+ */
+function shareHistoryItem(item) {
+    const shareText = `🔮 ¿Voy a morir mañana?\n\n"${item.text}"\n\n💀 Consulta tu destino descargando la app "Voy a morir" de tu tienda de aplicaciones.`;
+    const encodedText = encodeURIComponent(shareText);
+    const pageUrl = encodeURIComponent(window.location.href);
+
+    document.getElementById('share-whatsapp').href = `https://api.whatsapp.com/send?text=${encodedText}`;
+    document.getElementById('share-telegram').href = `https://t.me/share/url?url=${pageUrl}&text=${encodedText}`;
+    document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?text=${encodedText}`;
+    document.getElementById('share-email').href = `mailto:?subject=${encodeURIComponent('¿Voy a Morir Mañana?')}&body=${encodedText}`;
+
+    elements.shareModal.classList.remove('hidden');
 }
 
 /**

@@ -385,6 +385,29 @@
         </div>
     </div>
 
+    <!-- Modal de detalle de profecía -->
+    <div id="history-detail-modal" class="share-modal hidden">
+        <div class="share-modal-content history-detail-content">
+            <div class="share-modal-header">
+                <h3>🔮 Profecía</h3>
+                <button id="detail-close-btn" class="close-history-btn" onclick="closeHistoryDetail()">✕</button>
+            </div>
+            <div class="history-detail-body">
+                <p id="detail-date" class="history-detail-date"></p>
+                <p id="detail-text" class="history-detail-text"></p>
+                <button id="detail-share-btn" class="share-button history-detail-share-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18"
+                        height="18">
+                        <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+                        <polyline points="16 6 12 2 8 6" />
+                        <line x1="12" y1="2" x2="12" y2="15" />
+                    </svg>
+                    Compartir
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal de compartir -->
     <div id="share-modal" class="share-modal hidden">
         <div class="share-modal-content">
