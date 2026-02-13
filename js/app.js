@@ -469,7 +469,11 @@ function initEventListeners() {
 
     // Botón de compartir
     elements.shareBtn.addEventListener('click', () => {
-        audioSystem.playShare();
+        // IMPORTANTE: shareResult() debe ir PRIMERO para mantener el gesto de usuario
+        // Si navigator.share no está disponible, reproducir sonido
+        if (!navigator.share) {
+            audioSystem.playShare();
+        }
         shareResult();
     });
 
