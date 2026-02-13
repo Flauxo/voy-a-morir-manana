@@ -1029,9 +1029,15 @@ body::after {
 }
 
 .confirm-skull {
-    font-size: 3rem;
     margin-bottom: 1rem;
     animation: floatSkull 3s ease-in-out infinite;
+}
+
+.skull-svg-confirm {
+    width: 80px;
+    height: 80px;
+    animation: none;
+    filter: drop-shadow(0 0 15px var(--watercolor-purple));
 }
 
 .confirm-text {
