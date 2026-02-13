@@ -139,9 +139,13 @@ body::after {
 }
 
 .start-skull {
-    font-size: 5rem;
     margin-bottom: 2rem;
-    filter: grayscale(100%);
+}
+
+.skull-svg-start {
+    width: 120px;
+    height: 120px;
+    filter: drop-shadow(0 0 20px var(--watercolor-purple));
 }
 
 .start-text {
@@ -427,10 +431,14 @@ body::after {
 }
 
 .decorative-skull {
-    font-size: 4rem;
     margin-bottom: 1.5rem;
-    filter: grayscale(100%);
     animation: floatSkull 4s ease-in-out infinite;
+}
+
+.skull-svg-main {
+    width: 100px;
+    height: 100px;
+    filter: drop-shadow(0 0 15px var(--watercolor-purple));
 }
 
 @keyframes floatSkull {
@@ -775,10 +783,15 @@ body::after {
 }
 
 .card-skull {
-    font-size: 2rem;
     display: block;
     margin-bottom: 0.5rem;
-    filter: grayscale(100%);
+    text-align: center;
+}
+
+.skull-svg-card {
+    width: 50px;
+    height: 50px;
+    filter: drop-shadow(0 0 10px var(--watercolor-purple));
 }
 
 .card-header h2 {
