@@ -347,7 +347,13 @@ function shareHistoryItem(item) {
     const encodedText = encodeURIComponent(shareText);
     const pageUrl = encodeURIComponent(window.location.href);
 
-    document.getElementById('share-whatsapp').href = `https://api.whatsapp.com/send?text=${encodedText}`;
+    // Detectar si es móvil para usar el protocolo directo de WhatsApp
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const whatsappUrl = isMobile
+        ? `whatsapp://send?text=${encodedText}`
+        : `https://api.whatsapp.com/send?text=${encodedText}`;
+
+    document.getElementById('share-whatsapp').href = whatsappUrl;
     document.getElementById('share-telegram').href = `https://t.me/share/url?url=${pageUrl}&text=${encodedText}`;
     document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?text=${encodedText}`;
     document.getElementById('share-email').href = `mailto:?subject=${encodeURIComponent('¿Voy a Morir Mañana?')}&body=${encodedText}`;
@@ -442,7 +448,13 @@ function shareResult() {
     const pageUrl = encodeURIComponent(window.location.href);
 
     // Configurar los enlaces de cada app
-    document.getElementById('share-whatsapp').href = `https://api.whatsapp.com/send?text=${encodedText}`;
+    // Detectar si es móvil para usar el protocolo directo de WhatsApp
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const whatsappUrl = isMobile
+        ? `whatsapp://send?text=${encodedText}`
+        : `https://api.whatsapp.com/send?text=${encodedText}`;
+
+    document.getElementById('share-whatsapp').href = whatsappUrl;
     document.getElementById('share-telegram').href = `https://t.me/share/url?url=${pageUrl}&text=${encodedText}`;
     document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?text=${encodedText}`;
     document.getElementById('share-email').href = `mailto:?subject=${encodeURIComponent('¿Voy a Morir Mañana?')}&body=${encodedText}`;
