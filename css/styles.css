@@ -1185,9 +1185,37 @@ body::after {
 }
 
 .share-app-icon {
-    font-size: 1.4rem;
-    width: 2rem;
-    text-align: center;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.share-app-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.share-whatsapp .share-app-icon {
+    color: #25D366;
+}
+
+.share-telegram .share-app-icon {
+    color: #0088cc;
+}
+
+.share-twitter .share-app-icon {
+    color: #e7e9ea;
+}
+
+.share-email .share-app-icon {
+    color: var(--gold-light);
+}
+
+.share-copy .share-app-icon {
+    color: var(--text-muted);
 }
 
 .share-whatsapp:hover {
