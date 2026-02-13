@@ -117,7 +117,9 @@ const RESPUESTA_SI = `Sí, pero recuerda que esto es una app para sacar dinero c
 // CONSTANTES
 // =============================================
 
-const STORAGE_KEY = 'voyAMorirManana_lastUse';
+const STORAGE_KEY = 'voyAMorirManana_usageCount';
+const STORAGE_DATE_KEY = 'voyAMorirManana_usageDate';
+const MAX_DAILY_ATTEMPTS = 3;
 const HISTORY_KEY = 'voyAMorirManana_history';
 const SPLASH_DURATION = 4300; // 4.3 segundos (3.5s animación + 0.8s fade)
 
@@ -132,6 +134,9 @@ const elements = {
     resultScreen: document.getElementById('result-screen'),
     revealBtn: document.getElementById('reveal-btn'),
     waitMessage: document.getElementById('wait-message'),
+    waitMessageText: document.getElementById('wait-message-text'),
+    waitMessageTime: document.getElementById('wait-message-time'),
+    attemptsInfo: document.getElementById('attempts-info'),
     resultCard: document.getElementById('result-card'),
     resultText: document.getElementById('result-text'),
     resultDate: document.getElementById('result-date'),
@@ -143,7 +148,10 @@ const elements = {
     closeHistoryBtn: document.getElementById('close-history-btn'),
     soundToggle: document.getElementById('sound-toggle'),
     soundIconOn: document.getElementById('sound-icon-on'),
-    soundIconOff: document.getElementById('sound-icon-off')
+    soundIconOff: document.getElementById('sound-icon-off'),
+    confirmModal: document.getElementById('confirm-modal'),
+    confirmYesBtn: document.getElementById('confirm-yes-btn'),
+    confirmNoBtn: document.getElementById('confirm-no-btn')
 };
 
 // =============================================
@@ -159,18 +167,44 @@ function getTodayDate() {
 }
 
 /**
- * Verifica si ya se usó la app hoy
+ * Obtiene el número de usos hoy
  */
-function hasUsedToday() {
-    const lastUse = localStorage.getItem(STORAGE_KEY);
-    return lastUse === getTodayDate();
+function getUsageCountToday() {
+    const storedDate = localStorage.getItem(STORAGE_DATE_KEY);
+    if (storedDate !== getTodayDate()) {
+        // Nuevo día, resetear contador
+        return 0;
+    }
+    return parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
 }
 
 /**
- * Guarda la fecha de uso actual
+ * Obtiene los intentos restantes hoy
+ */
+function getRemainingAttempts() {
+    return MAX_DAILY_ATTEMPTS - getUsageCountToday();
+}
+
+/**
+ * Verifica si ya se agotaron los intentos de hoy
+ */
+function hasUsedAllToday() {
+    return getUsageCountToday() >= MAX_DAILY_ATTEMPTS;
+}
+
+/**
+ * Guarda un uso
  */
 function saveUsage() {
-    localStorage.setItem(STORAGE_KEY, getTodayDate());
+    const today = getTodayDate();
+    const storedDate = localStorage.getItem(STORAGE_DATE_KEY);
+    let count = 0;
+    if (storedDate === today) {
+        count = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
+    }
+    count++;
+    localStorage.setItem(STORAGE_DATE_KEY, today);
+    localStorage.setItem(STORAGE_KEY, count.toString());
 }
 
 /**
@@ -278,13 +312,29 @@ function showMainScreen() {
     elements.mainScreen.classList.remove('hidden');
     elements.resultScreen.classList.add('hidden');
 
-    // Verificar si ya se usó hoy
-    if (hasUsedToday()) {
+    const remaining = getRemainingAttempts();
+
+    if (remaining <= 0) {
+        // Sin intentos restantes
         elements.revealBtn.classList.add('hidden');
         elements.waitMessage.classList.remove('hidden');
+        elements.waitMessageText.textContent = 'Ya has agotado tus 3 intentos de hoy.';
+        elements.waitMessageTime.textContent = 'Vuelve mañana... si llegas.';
+        if (elements.attemptsInfo) elements.attemptsInfo.classList.add('hidden');
     } else {
         elements.revealBtn.classList.remove('hidden');
         elements.waitMessage.classList.add('hidden');
+        // Mostrar intentos restantes
+        if (elements.attemptsInfo) {
+            elements.attemptsInfo.classList.remove('hidden');
+            if (remaining === MAX_DAILY_ATTEMPTS) {
+                elements.attemptsInfo.textContent = `Puedes tentar a la suerte ${remaining} veces hoy.`;
+            } else if (remaining === 1) {
+                elements.attemptsInfo.textContent = '⚠️ Te queda 1 último intento por hoy.';
+            } else {
+                elements.attemptsInfo.textContent = `Puedes probar suerte ${remaining} veces más por hoy.`;
+            }
+        }
     }
 }
 
@@ -363,8 +413,8 @@ async function shareResult() {
  * Inicializa los eventos de la aplicación
  */
 function initEventListeners() {
-    // Botón de revelar destino
-    elements.revealBtn.addEventListener('click', () => {
+    // Función que ejecuta la revelación del destino
+    function executeReveal() {
         audioSystem.playButtonClick();
 
         // Guardar uso
@@ -381,6 +431,31 @@ function initEventListeners() {
         setTimeout(() => {
             audioSystem.playReveal(response.isYes);
         }, 300);
+    }
+
+    // Botón de revelar destino - muestra confirmación
+    elements.revealBtn.addEventListener('click', () => {
+        audioSystem.playButtonClick();
+        elements.confirmModal.classList.remove('hidden');
+    });
+
+    // Confirmación: Sí, estoy seguro
+    elements.confirmYesBtn.addEventListener('click', () => {
+        elements.confirmModal.classList.add('hidden');
+        executeReveal();
+    });
+
+    // Confirmación: No, cancelar
+    elements.confirmNoBtn.addEventListener('click', () => {
+        audioSystem.playButtonClick();
+        elements.confirmModal.classList.add('hidden');
+    });
+
+    // Cerrar confirmación al hacer click fuera
+    elements.confirmModal.addEventListener('click', (e) => {
+        if (e.target === elements.confirmModal) {
+            elements.confirmModal.classList.add('hidden');
+        }
     });
 
     // Hover en botón principal

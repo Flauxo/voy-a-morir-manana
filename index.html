@@ -244,10 +244,13 @@
                 <span class="btn-ornament right">✧</span>
             </button>
 
+            <!-- Información de intentos restantes -->
+            <p id="attempts-info" class="attempts-info hidden"></p>
+
             <!-- Mensaje de espera -->
             <div id="wait-message" class="wait-message hidden">
-                <p>Ya has tentado al destino hoy.</p>
-                <p class="wait-time">Vuelve mañana... si llegas.</p>
+                <p id="wait-message-text">Ya has agotado tus 3 intentos de hoy.</p>
+                <p id="wait-message-time" class="wait-time">Vuelve mañana... si llegas.</p>
                 <button id="history-btn" class="history-button">
                     <span>📜</span> Ver profecías anteriores
                 </button>
@@ -384,6 +387,23 @@
 
     <script src="js/audio.js"></script>
     <script src="js/app.js"></script>
+
+    <!-- Modal de confirmación -->
+    <div id="confirm-modal" class="confirm-modal hidden">
+        <div class="confirm-content">
+            <div class="confirm-skull">💀</div>
+            <p class="confirm-text">¿Estás seguro?</p>
+            <p class="confirm-subtext">Vas a gastar uno de tus intentos diarios.</p>
+            <div class="confirm-buttons">
+                <button id="confirm-yes-btn" class="confirm-yes-btn">
+                    <span>✧</span> Sí, quiero saber
+                </button>
+                <button id="confirm-no-btn" class="confirm-no-btn">
+                    Mejor no...
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

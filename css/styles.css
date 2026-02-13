@@ -978,3 +978,123 @@ body::after {
         opacity: 0.7;
     }
 }
+
+/* =============================================
+   INTENTOS RESTANTES
+   ============================================= */
+.attempts-info {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--gold-dark);
+    margin-top: 1.2rem;
+    letter-spacing: 0.05em;
+    opacity: 0.85;
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* =============================================
+   MODAL DE CONFIRMACIÓN
+   ============================================= */
+.confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 4000;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.confirm-content {
+    background: linear-gradient(145deg, var(--bg-card), var(--bg-paper));
+    border: 2px solid var(--gold-dark);
+    padding: 2.5rem 2rem;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+    box-shadow:
+        0 10px 40px var(--shadow-dark),
+        0 0 60px rgba(74, 48, 64, 0.3);
+    animation: cardReveal 0.4s ease-out;
+}
+
+.confirm-skull {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    animation: floatSkull 3s ease-in-out infinite;
+}
+
+.confirm-text {
+    font-family: var(--font-gothic);
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--paper-light);
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px var(--shadow-dark);
+}
+
+.confirm-subtext {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    letter-spacing: 0.05em;
+}
+
+.confirm-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.confirm-yes-btn {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--paper-light);
+    background: linear-gradient(135deg, var(--watercolor-burgundy), var(--ink-black));
+    border: 2px solid var(--gold-dark);
+    padding: 1rem 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.confirm-yes-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 5px 20px var(--shadow-dark),
+        0 0 15px var(--watercolor-purple);
+    border-color: var(--gold-light);
+}
+
+.confirm-yes-btn:active {
+    transform: translateY(0);
+}
+
+.confirm-no-btn {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid var(--ink-faded);
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-style: italic;
+}
+
+.confirm-no-btn:hover {
+    color: var(--text-light);
+    border-color: var(--gold-dark);
+}
