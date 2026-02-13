@@ -151,7 +151,9 @@ const elements = {
     soundIconOff: document.getElementById('sound-icon-off'),
     confirmModal: document.getElementById('confirm-modal'),
     confirmYesBtn: document.getElementById('confirm-yes-btn'),
-    confirmNoBtn: document.getElementById('confirm-no-btn')
+    confirmNoBtn: document.getElementById('confirm-no-btn'),
+    shareModal: document.getElementById('share-modal'),
+    closeShareBtn: document.getElementById('close-share-btn')
 };
 
 // =============================================
@@ -364,49 +366,65 @@ function showResultScreen(response) {
 // =============================================
 
 /**
- * Comparte el resultado usando Web Share API o clipboard
+ * Genera el texto para compartir
+ */
+function getShareText() {
+    const resultText = elements.resultText.textContent;
+    return `🔮 ¿Voy a morir mañana?\n\n"${resultText}"\n\n💀 Consulta tu destino descargando la app "Voy a morir" de tu tienda de aplicaciones.`;
+}
+
+/**
+ * Muestra el menú de compartir personalizado
  */
 function shareResult() {
-    const resultText = elements.resultText.textContent;
-    const shareText = `🔮 ¿Voy a morir mañana?\n\n"${resultText}"\n\n💀 Consulta tu destino descargando la app "Voy a morir" de tu tienda de aplicaciones.`;
+    const shareText = getShareText();
+    const encodedText = encodeURIComponent(shareText);
+    const pageUrl = encodeURIComponent(window.location.href);
 
-    // DEBUG TEMPORAL - quitar después
-    alert('DEBUG: navigator.share = ' + typeof navigator.share + ', secure = ' + window.isSecureContext + ', protocol = ' + location.protocol);
+    // Configurar los enlaces de cada app
+    document.getElementById('share-whatsapp').href = `https://wa.me/?text=${encodedText}`;
+    document.getElementById('share-telegram').href = `https://t.me/share/url?url=${pageUrl}&text=${encodedText}`;
+    document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?text=${encodedText}`;
+    document.getElementById('share-email').href = `mailto:?subject=${encodeURIComponent('¿Voy a Morir Mañana?')}&body=${encodedText}`;
 
-    // Intentar usar Web Share API (disponible en móviles)
-    if (navigator.share) {
-        navigator.share({
-            title: '¿Voy a Morir Mañana?',
-            text: shareText,
-            url: window.location.href
-        }).catch(err => {
-            if (err.name !== 'AbortError') {
-                alert('Error share: ' + err.message);
-                copyToClipboard(shareText);
-            }
-        });
-    } else {
-        copyToClipboard(shareText);
-    }
+    // Mostrar modal
+    elements.shareModal.classList.remove('hidden');
 }
 
 /**
  * Copia texto al portapapeles con feedback visual
  */
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        const originalText = elements.shareBtn.innerHTML;
-        elements.shareBtn.innerHTML = '<span>✓</span> ¡Copiado!';
-        elements.shareBtn.style.background = 'linear-gradient(135deg, #2a4a2a, #1a1a1a)';
-
+function copyShareText() {
+    const shareText = getShareText();
+    navigator.clipboard.writeText(shareText).then(() => {
+        const copyBtn = document.getElementById('share-copy');
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<span class="share-app-icon">✓</span><span>¡Copiado!</span>';
         setTimeout(() => {
-            elements.shareBtn.innerHTML = originalText;
-            elements.shareBtn.style.background = '';
-        }, 2000);
-    }).catch(err => {
-        console.error('Error copiando:', err);
-        alert('No se pudo compartir. Copia el texto manualmente.');
+            copyBtn.innerHTML = originalText;
+        }, 1500);
+    }).catch(() => {
+        // Fallback para navegadores sin clipboard API
+        const textarea = document.createElement('textarea');
+        textarea.value = shareText;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        const copyBtn = document.getElementById('share-copy');
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<span class="share-app-icon">✓</span><span>¡Copiado!</span>';
+        setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+        }, 1500);
     });
+}
+
+/**
+ * Cierra el modal de compartir
+ */
+function closeShareModal() {
+    elements.shareModal.classList.add('hidden');
 }
 
 // =============================================
@@ -469,12 +487,26 @@ function initEventListeners() {
 
     // Botón de compartir
     elements.shareBtn.addEventListener('click', () => {
-        // IMPORTANTE: shareResult() debe ir PRIMERO para mantener el gesto de usuario
-        // Si navigator.share no está disponible, reproducir sonido
-        if (!navigator.share) {
-            audioSystem.playShare();
-        }
+        audioSystem.playButtonClick();
         shareResult();
+    });
+
+    // Cerrar modal de compartir
+    elements.closeShareBtn.addEventListener('click', () => {
+        audioSystem.playButtonClick();
+        closeShareModal();
+    });
+
+    // Cerrar modal de compartir al hacer click fuera
+    elements.shareModal.addEventListener('click', (e) => {
+        if (e.target === elements.shareModal) {
+            closeShareModal();
+        }
+    });
+
+    // Botón de copiar en modal de compartir
+    document.getElementById('share-copy').addEventListener('click', () => {
+        copyShareText();
     });
 
     elements.shareBtn.addEventListener('mouseenter', () => {
