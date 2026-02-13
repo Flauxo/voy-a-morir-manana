@@ -366,31 +366,35 @@ function showResultScreen(response) {
 /**
  * Comparte el resultado usando Web Share API o clipboard
  */
-async function shareResult() {
+function shareResult() {
     const resultText = elements.resultText.textContent;
     const shareText = `🔮 ¿Voy a morir mañana?\n\n"${resultText}"\n\n💀 Consulta tu destino descargando la app "Voy a morir" de tu tienda de aplicaciones.`;
 
     // Intentar usar Web Share API (disponible en móviles)
     if (navigator.share) {
-        try {
-            await navigator.share({
-                title: '¿Voy a Morir Mañana?',
-                text: shareText
-            });
-            return;
-        } catch (err) {
-            // Si el usuario cancela o hay error, usar fallback
+        navigator.share({
+            title: '¿Voy a Morir Mañana?',
+            text: shareText,
+            url: window.location.href
+        }).catch(err => {
+            // Si el usuario cancela, no hacer nada
             if (err.name !== 'AbortError') {
                 console.log('Error compartiendo:', err);
+                // Fallback a clipboard si falla
+                copyToClipboard(shareText);
             }
-        }
+        });
+    } else {
+        // Fallback: copiar al portapapeles
+        copyToClipboard(shareText);
     }
+}
 
-    // Fallback: copiar al portapapeles
-    try {
-        await navigator.clipboard.writeText(shareText);
-
-        // Feedback visual
+/**
+ * Copia texto al portapapeles con feedback visual
+ */
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
         const originalText = elements.shareBtn.innerHTML;
         elements.shareBtn.innerHTML = '<span>✓</span> ¡Copiado!';
         elements.shareBtn.style.background = 'linear-gradient(135deg, #2a4a2a, #1a1a1a)';
@@ -399,10 +403,10 @@ async function shareResult() {
             elements.shareBtn.innerHTML = originalText;
             elements.shareBtn.style.background = '';
         }, 2000);
-    } catch (err) {
+    }).catch(err => {
         console.error('Error copiando:', err);
         alert('No se pudo compartir. Copia el texto manualmente.');
-    }
+    });
 }
 
 // =============================================
