@@ -347,11 +347,21 @@ function shareHistoryItem(item) {
     const encodedText = encodeURIComponent(shareText);
     const pageUrl = encodeURIComponent(window.location.href);
 
-    // Detectar si es móvil para usar el protocolo directo de WhatsApp
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const whatsappUrl = isMobile
-        ? `whatsapp://send?text=${encodedText}`
-        : `https://api.whatsapp.com/send?text=${encodedText}`;
+    // Detectar plataforma
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    let whatsappUrl;
+    if (isAndroid) {
+        // En Android usamos intent:// para forzar la app
+        whatsappUrl = `intent://send?text=${encodedText}#Intent;scheme=whatsapp;package=com.whatsapp;end`;
+    } else if (isiOS) {
+        // En iOS usamos whatsapp://
+        whatsappUrl = `whatsapp://send?text=${encodedText}`;
+    } else {
+        // Desktop / Web fallback
+        whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+    }
 
     document.getElementById('share-whatsapp').href = whatsappUrl;
     document.getElementById('share-telegram').href = `https://t.me/share/url?url=${pageUrl}&text=${encodedText}`;
@@ -448,11 +458,21 @@ function shareResult() {
     const pageUrl = encodeURIComponent(window.location.href);
 
     // Configurar los enlaces de cada app
-    // Detectar si es móvil para usar el protocolo directo de WhatsApp
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const whatsappUrl = isMobile
-        ? `whatsapp://send?text=${encodedText}`
-        : `https://api.whatsapp.com/send?text=${encodedText}`;
+    // Detectar plataforma
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    let whatsappUrl;
+    if (isAndroid) {
+        // En Android usamos intent:// para forzar la app
+        whatsappUrl = `intent://send?text=${encodedText}#Intent;scheme=whatsapp;package=com.whatsapp;end`;
+    } else if (isiOS) {
+        // En iOS usamos whatsapp://
+        whatsappUrl = `whatsapp://send?text=${encodedText}`;
+    } else {
+        // Desktop / Web fallback
+        whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+    }
 
     document.getElementById('share-whatsapp').href = whatsappUrl;
     document.getElementById('share-telegram').href = `https://t.me/share/url?url=${pageUrl}&text=${encodedText}`;
