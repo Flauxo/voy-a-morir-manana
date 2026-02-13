@@ -115,6 +115,9 @@ body::after {
     justify-content: center;
     z-index: 2000;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
 }
 
 .start-content {

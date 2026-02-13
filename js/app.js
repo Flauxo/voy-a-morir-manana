@@ -521,14 +521,25 @@ function initEventListeners() {
  * Inicializa la aplicación
  */
 function init() {
-    // Configurar event listeners
-    initEventListeners();
+    // Configurar event listeners (con protección contra errores)
+    try {
+        initEventListeners();
+    } catch (e) {
+        console.error('Error inicializando listeners:', e);
+    }
 
     // Ocultar splash inicialmente (se mostrará después del click)
     elements.splashScreen.classList.add('hidden');
 
     // Handler para la pantalla de inicio
-    const handleStart = () => {
+    let startHandled = false;
+    const handleStart = (e) => {
+        if (startHandled) return;
+        startHandled = true;
+
+        // Prevenir efecto de toque azul en móviles
+        if (e) e.preventDefault();
+
         // Iniciar audio
         audioSystem.init();
 
@@ -557,7 +568,7 @@ function init() {
     };
 
     elements.startScreen.addEventListener('click', handleStart);
-    elements.startScreen.addEventListener('touchstart', handleStart);
+    elements.startScreen.addEventListener('touchstart', handleStart, { passive: false });
 }
 
 // Ejecutar cuando el DOM esté listo
