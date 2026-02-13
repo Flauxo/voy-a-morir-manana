@@ -382,7 +382,7 @@ function shareResult() {
     const pageUrl = encodeURIComponent(window.location.href);
 
     // Configurar los enlaces de cada app
-    document.getElementById('share-whatsapp').href = `https://wa.me/?text=${encodedText}`;
+    document.getElementById('share-whatsapp').href = `https://api.whatsapp.com/send?text=${encodedText}`;
     document.getElementById('share-telegram').href = `https://t.me/share/url?url=${pageUrl}&text=${encodedText}`;
     document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?text=${encodedText}`;
     document.getElementById('share-email').href = `mailto:?subject=${encodeURIComponent('¿Voy a Morir Mañana?')}&body=${encodedText}`;
