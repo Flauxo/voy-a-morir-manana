@@ -436,8 +436,9 @@ body::after {
 }
 
 .skull-svg-main {
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    height: 70px;
+    animation: none;
     filter: drop-shadow(0 0 15px var(--watercolor-purple));
 }
 
@@ -791,6 +792,7 @@ body::after {
 .skull-svg-card {
     width: 50px;
     height: 50px;
+    animation: none;
     filter: drop-shadow(0 0 10px var(--watercolor-purple));
 }
 
