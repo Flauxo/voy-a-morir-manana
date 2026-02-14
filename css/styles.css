@@ -1255,6 +1255,7 @@ body::after {
     color: var(--text-light);
     font-family: var(--font-body);
     font-size: 1rem;
+    font-style: italic;
     text-decoration: none;
     cursor: pointer;
     transition: all 0.3s ease;
