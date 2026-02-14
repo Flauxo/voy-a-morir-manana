@@ -34,6 +34,26 @@ class AudioSystem {
         return this.isMuted;
     }
 
+
+    /**
+     * Maneja el cambio de visibilidad de la página
+     */
+    handleVisibilityChange() {
+        if (!this.audioContext) return;
+
+        if (document.hidden) {
+            // Suspender contexto si la página no es visible
+            if (this.audioContext.state === 'running') {
+                this.audioContext.suspend();
+            }
+        } else {
+            // Reanudar contexto si la página vuelve a ser visible
+            if (this.audioContext.state === 'suspended') {
+                this.audioContext.resume();
+            }
+        }
+    }
+
     /**
      * Inicializa el contexto de audio (requiere interacción del usuario)
      */
@@ -43,6 +63,9 @@ class AudioSystem {
         try {
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             this.isInitialized = true;
+
+            // Silenciar al cambiar de pestaña
+            document.addEventListener('visibilitychange', () => this.handleVisibilityChange());
         } catch (e) {
             console.log('Web Audio API no soportada');
         }
